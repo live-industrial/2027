@@ -1,13 +1,17 @@
-# Utilisable tel quel avec `docker compose up -d --build` ou comme "Docker Compose" dans Coolify.
+# Compatible Coolify (build pack "Docker Compose") et `docker compose up -d --build`.
 services:
   compta:
     build: .
+    init: true
     restart: unless-stopped
+    stop_grace_period: 15s
     environment:
       JWT_SECRET: ${JWT_SECRET:?Définissez JWT_SECRET (chaîne aléatoire longue)}
       TRUST_PROXY: ${TRUST_PROXY:-1}
       BACKUP_KEEP: ${BACKUP_KEEP:-30}
       TOTP_KEY: ${TOTP_KEY:-}
+      PORT: "3000"
+      HOST: 0.0.0.0
       DB_FILE: /data/comptabilite.sqlite
     expose:
       - "3000"
@@ -15,6 +19,12 @@ services:
       - compta-data:/data
       - compta-backups:/app/backups
       - compta-uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
 volumes:
   compta-data:
   compta-backups:

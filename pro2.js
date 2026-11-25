@@ -1,7 +1,7 @@
 'use strict';
 // Module 2 : OCR factures, pièces jointes, plan CGNC de référence, états CGNC, import bancaire, amortissements
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
-const REF = require('./data/cgnc.js');
+const REF = require('./cgnc-reference.js');
 
 /* ---------- Lecture de nombres / dates d'un texte OCR ---------- */
 const num = s => { const t = String(s ?? '').replace(/[^\d.,]/g, ''); if (!t) return null; const m = t.match(/[.,](\d{1,2})$/); const v = m ? t.slice(0, t.length - m[1].length - 1).replace(/[.,]/g, '') + '.' + m[1] : t.replace(/[.,]/g, ''); const n = Number(v); return Number.isFinite(n) ? n : null; };

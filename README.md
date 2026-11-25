@@ -24,6 +24,14 @@ Application web locale (Node.js / Express / SQLite), interface française. Versi
 
 **Corrigés** : formulaire de saisie multi-lignes (plantait), virements internes (erreur SQL), pages Rapports et Paramètres (inexistantes), règlements d'avoirs (sens inversé), tableau de bord (avoirs ajoutés au lieu de soustraits), sauvegarde exposée à tout utilisateur connecté.
 
+## Docker / Coolify
+> Envoyez sur GitHub **tous** les fichiers du zip (fichiers à la racine : `server.js`, `pro.js`, `pro2.js`, `twofa.js`, `totp.js`, `cgnc-reference.js`, `Dockerfile`, `docker-compose.yml`, `package.json`, `package-lock.json` + dossiers `public`, `database`, `scripts`). Si un fichier manque, le démarrage affiche la liste exacte des fichiers manquants.
+
+- `docker compose up -d --build` (définir `JWT_SECRET`) ou, dans Coolify, build pack **Docker Compose** avec le dépôt Git ; variables : `JWT_SECRET`, `TRUST_PROXY=1`, `BACKUP_KEEP=30` ; domaine : `https://votre-domaine:3000` (le `:3000` indique le port interne).
+- Données dans 3 volumes nommés (`/data`, `/app/backups`, `/app/uploads`) : conservés à chaque redéploiement. **Ne jamais exécuter 2 instances** sur la même base.
+- Healthcheck intégré (`/api/health`, départ à froid toléré 40 s) ; arrêt propre sur SIGTERM (base sauvegardée avant sortie) ; processus non-root ; `init: true`.
+- Vérifier depuis le Terminal Coolify : `node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>r.text()).then(console.log)"`.
+
 ## Interface (mise à jour visuelle)
 Couleur principale **#7e306e** (violet), navigation **en haut** avec méga-menus par groupe, indicateur animé, fil d'Ariane, bouton « Créer » (raccourcis facture, OCR, règlement, écriture…), thème clair/sombre, et sur mobile une barre flottante en bas + menu plein écran. Aucune fonction métier n'a été modifiée.
 
